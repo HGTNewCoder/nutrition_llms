@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Routine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🧘‍♂️ Your Personalized Routine</h1>
+        <p class="subtitle">Below is your AI-generated daily routine for Diabetes management.</p>
+
+        <section>
+            <h2>🩺 Routine Details</h2>
+            <div class="routine-llm-output">
+                {% if routine_text %}
+                    <pre style="white-space: pre-wrap; background:#f9fafb; padding:15px; border-radius:8px;">{{ routine_text }}</pre>
+                {% else %}
+                    <p>No routine generated. Please go back and submit the form.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <footer>
+            <a class="back-link" href="{{ url_for('health_form') }}">⬅️ Back to Form</a>
+        </footer>
+    </div>
+</body>
+</html>

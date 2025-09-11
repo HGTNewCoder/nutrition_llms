@@ -89,4 +89,5 @@ def daily_routine():
     return render_template("routine.html", routine_sections=routine_sections, routine_text=routine_text)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port = port, debug=True)

@@ -14,8 +14,8 @@ my_llm_model = VertexAI(
 template_nutrition_excercise = """
 You are a medical nutrition expert.
 
-ONLY return a clean and concise list of 5-10 specific nutrition items (only the exact names of foods) and 5-10 exercises as bullet points for each disease listed.
-No explanations, no paragraphs, no notes, no disclaimers.
+ONLY return a clean and concise list of 5-10 specific nutrition items in 5 main nutrients (only the exact names of foods) and 5-10 exercises as bullet points for each disease listed.
+No explanations, no paragraphs, no notes, no disclaimers.If there is more than 1 disease combine it together to
 
 Format exactly as follows:
 

@@ -185,3 +185,23 @@ a:hover {
     font-size: 1rem;
     margin-bottom: 20px;
 }
+/* Routine Table Styling */
+.routine-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.routine-table td {
+  border: 1px solid #e5e7eb;
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+  white-space: normal;
+  font-size: 1rem;
+  line-height: 1.2;
+}

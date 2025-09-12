@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import csv
 import os
 from prompt import generate_routine  # Your existing LLM pipeline
+import markdown
 
 app = Flask(__name__)
 
@@ -51,7 +52,8 @@ def daily_routine():
         return "No disease data found. Please submit the health form first."
 
     routine_text = generate_routine(disease_list, weight)
-    # Parse LLM output into sections for template
+
+    # 🔹 Parse sections (your existing logic)
     routine_sections = []
     sections = routine_text.split("**")
     for sec in sections:
@@ -85,9 +87,19 @@ def daily_routine():
             "exercises": exercises,
             "foods": foods
         })
-    # Pass parsed routine_sections and raw routine_text to template
-    return render_template("routine.html", routine_sections=routine_sections, routine_text=routine_text)
+
+    # 🔹 Convert full LLM output from Markdown → HTML
+    routine_html = markdown.markdown(
+        routine_text,
+        extensions=["fenced_code", "tables"]
+    )
+
+    # 🔹 Send both parsed and raw HTML to the template
+    return render_template(
+        "routine.html",
+        routine_sections=routine_sections,
+        routine_text=routine_html
+    )
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port = port, debug=True)
+    app.run(debug=True)

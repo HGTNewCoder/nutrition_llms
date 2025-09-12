@@ -1,27 +1,24 @@
-import api_key
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SimpleSequentialChain
 from langchain_google_vertexai import VertexAI
-<<<<<<< Updated upstream
-=======
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
->>>>>>> Stashed changes
 
 # Initialize LLM model
 my_llm_model = VertexAI(
-    model=api_key.MODEL,
-    project=api_key.PROJECT,
-    location=api_key.LOCATION
+    model=os.getenv("MODEL"),
+    project=os.getenv("PROJECT"),
+    location=os.getenv("LOCATION")
 )
 
 # Template for nutrition and exercise
 template_nutrition_excercise = """
 You are a medical nutrition expert.
 
-ONLY return a clean and concise list of 5-10 specific nutrition items (only the exact names of foods) and 5-10 exercises as bullet points for each disease listed.
-No explanations, no paragraphs, no notes, no disclaimers.
+ONLY return a clean and concise list of 5-10 specific nutrition items in 5 main nutrients (only the exact names of foods) and 5-10 exercises as bullet points for each disease listed.
+No explanations, no paragraphs, no notes, no disclaimers.If there is more than 1 disease combine it together to
 
 Format exactly as follows:
 

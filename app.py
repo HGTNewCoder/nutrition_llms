@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 import csv
 import os
 from prompt import generate_routine  # Your existing LLM pipeline
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 

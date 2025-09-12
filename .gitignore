@@ -1,3 +1,4 @@
 key.json
 .env
 user_data.csv
+__pycache__/

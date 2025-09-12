@@ -1,12 +1,10 @@
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SimpleSequentialChain
 from langchain_google_vertexai import VertexAI
-<<<<<<< Updated upstream
-=======
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
->>>>>>> Stashed changes
 
 # Initialize LLM model
 my_llm_model = VertexAI(

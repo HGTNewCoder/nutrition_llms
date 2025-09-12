@@ -26,4 +26,9 @@ HGT,17,80.0,Tuberculosis;Diabetes
 HGT,17,80.0,Measles;Diabetes
 HGt,17,80.0,Tuberculosis;Diabetes
 HGT,17,80.0,Tuberculosis;Diabetes
+<<<<<<< Updated upstream
 Kha,17,68.0,Down syndrome;Diabetes
+=======
+HGT,18,80.0,Tuberculosis;Diabetes
+HGT,18,80.0,Tuberculosis;Diabetes
+>>>>>>> Stashed changes

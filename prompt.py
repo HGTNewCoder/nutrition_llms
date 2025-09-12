@@ -63,7 +63,7 @@ nutrition_chain = LLMChain(llm=my_llm_model, prompt=prompt_nutrition)
 template_routine = """
 You are a medical nutrition expert.
 
-Can you help me to create the routine based on {list_of_food_and_exercise} from 5-6 am to 10-11 pm?
+Can you help me to create the routine based on {list_of_food_and_exercise} from 5-6 am to 10-11 pm? Make a table
 """
 prompt_routine = PromptTemplate(
     input_variables=["list_of_food_and_exercise"],

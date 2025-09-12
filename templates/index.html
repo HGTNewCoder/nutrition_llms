@@ -25,7 +25,7 @@
                     <label class="disease-card" data-disease="{{ d|lower }}">
                         <input type="checkbox" name="disease" value="{{ d }}" style="display:none;" {% if d=="Diabetes" %}checked{% endif %}>
                         <div class="card-content">
-                            <img src="{{ url_for('static', filename=d|lower|replace(' ', '_') ~ '.jpg') }}" alt="{{ d }}" class="disease-img">
+                            <img src="{{ url_for('image', filename=d|lower|replace(' ', '_') ~ '.jpg') }}" alt="{{ d }}" class="disease-img">
                             <span class="disease-name">{{ d }}</span>
                         </div>
                     </label>

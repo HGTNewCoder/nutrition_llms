@@ -1,10 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import csv
 import os
 from prompt import generate_routine  # Your existing LLM pipeline
 import markdown
 
 app = Flask(__name__)
+# ---- ROUTES ----
+@app.route('/image/<path:filename>')
+def image(filename):
+    return send_from_directory('image', filename)
 
 # ---- Load disease options ----
 def load_diseases():

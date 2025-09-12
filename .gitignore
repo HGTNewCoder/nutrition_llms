@@ -1,4 +1,4 @@
 key.json
 .env
-user_data.csv
 *.pyc
+user_data.csv

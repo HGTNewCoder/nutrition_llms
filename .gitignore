@@ -2,3 +2,6 @@ key.json
 .env
 *.pyc
 user_data.csv
+venv/
+.vscode/
+__pycache__/

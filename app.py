@@ -1,8 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-import csv
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 import os
-from prompt import generate_routine  # Your existing LLM pipeline
-import markdown
+import csv
+from prompt import generate_food_exercise, generate_important, generate_routine
 
 app = Flask(__name__)
 # ---- ROUTES ----
@@ -21,89 +20,78 @@ def load_diseases():
     return diseases
 
 # ---- Save user data ----
-def save_user_data(name, age, weight, disease_list):
+def save_user_data(name, age, weight,height, disease_list):
     file_exists = os.path.isfile("user_data.csv")
     with open("user_data.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
         if not file_exists:
-            writer.writerow(["Name", "Age", "Weight", "Disease"])
-        writer.writerow([name, age, weight, ";".join(disease_list)])
+            writer.writerow(["Name", "Age", "Weight", "Height","Disease"])
+        writer.writerow([name, age, weight, height, ";".join(disease_list)])
 
-# ---- ROUTES ----
-@app.route("/", methods=["GET", "POST"])
+
+@app.route("/base", methods=["GET", "POST"])
 def health_form():
     diseases = load_diseases()
+    
     if request.method == "POST":
-        name = request.form.get("name")
-        age = request.form.get("age")
-        weight = float(request.form.get("weight"))
-        selected_diseases = request.form.getlist("disease")
+        # collect form data
+        form_data = {
+            "name": request.form.get("name"),
+            "age": request.form.get("age"),
+            "weight": request.form.get("weight"),
+            "height": request.form.get("height"),
+            "sex": request.form.get("sex"),
+            "race": request.form.get("race"),
+            "disease": request.form.getlist("disease")
+        }
 
-        # Save data
-        save_user_data(name, age, weight, selected_diseases)
+        # Save user data
+        save_user_data(
+            form_data["name"],
+            form_data["age"],
+            form_data["weight"],
+            form_data["height"],
+            form_data["disease"]
+        )
 
-        # Redirect to routine page with query params
-        return redirect(url_for("daily_routine", weight=weight, disease=",".join(selected_diseases)))
+        # Render answer page immediately with form data
+        return render_template("answer.html", form_data=form_data)
 
-    return render_template("index.html", diseases=diseases)
+    return render_template("base.html", diseases=diseases)
 
-@app.route("/routine")
-def daily_routine():
-    disease_list = request.args.get("disease", "").split(",")
-    weight = float(request.args.get("weight", 0))
 
-    if not disease_list:
-        return "No disease data found. Please submit the health form first."
 
-    routine_text = generate_routine(disease_list, weight)
 
-    # 🔹 Parse sections (your existing logic)
-    routine_sections = []
-    sections = routine_text.split("**")
-    for sec in sections:
-        sec = sec.strip()
-        if not sec:
-            continue
-        try:
-            disease_name, rest = sec.split("\n", 1)
-        except ValueError:
-            disease_name, rest = sec, ""
-        exercises = []
-        foods = []
-        lines = rest.split("\n")
-        current_section = None
-        for line in lines:
-            line = line.strip()
-            if line.startswith("Exercise:"):
-                current_section = "exercise"
-                continue
-            elif line.startswith("Food:"):
-                current_section = "food"
-                continue
-            elif line.startswith("-"):
-                item = line.replace("-", "").strip()
-                if current_section == "exercise":
-                    exercises.append(item)
-                elif current_section == "food":
-                    foods.append(item)
-        routine_sections.append({
-            "disease": disease_name,
-            "exercises": exercises,
-            "foods": foods
-        })
+@app.route("/")
+def home():
+    return render_template("base.html", page="home")
 
-    # 🔹 Convert full LLM output from Markdown → HTML
-    routine_html = markdown.markdown(
-        routine_text,
-        extensions=["fenced_code", "tables"]
-    )
 
-    # 🔹 Send both parsed and raw HTML to the template
-    return render_template(
-        "routine.html",
-        routine_sections=routine_sections,
-        routine_text=routine_html
-    )
+@app.route("/ask")
+def ask():
+    diseases = load_diseases()
+    return render_template("ask.html", page="ask", diseases=diseases)
+
+
+@app.route("/answer")
+def answer():
+    return render_template("answer.html", page="answer")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html", page="about")
+
+@app.route("/get_content/<category>", methods=["POST"])
+def get_content(category):
+    if category == "food":
+        return jsonify({"content": generate_food_exercise()})
+    elif category == "routine":
+        return jsonify({"content": generate_routine()})
+    elif category == "important":
+        return jsonify({"content": generate_important()})
+    else:
+        return jsonify({"content": "No content available."})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

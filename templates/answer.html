@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-section" style="text-align: center;">
+    <h1>Answer Page</h1>
+</section>
+
+<div class="container">
+    <!-- Hidden user form (collects all user input) -->
+    <form id="userForm" style="display:none;">
+        <input type="text" name="name" value="{{ request.form.get('name', '') }}">
+        <input type="number" name="age" value="{{ request.form.get('age', '') }}">
+        <input type="number" step="0.1" name="weight" value="{{ request.form.get('weight', '') }}">
+        <input type="number" step="0.1" name="height" value="{{ request.form.get('height', '') }}">
+        <input type="text" name="sex" value="{{ request.form.get('sex', '') }}">
+        <input type="text" name="race" value="{{ request.form.get('race', '') }}">
+        {% for disease in request.form.getlist('disease') %}
+            <input type="hidden" name="disease" value="{{ disease }}">
+        {% endfor %}
+    </form>
+
+    <!-- Small boxes row with image and overlay text -->
+    <div class="small-boxes">
+        <div class="small-box" data-category="food">
+            <img src="{{ url_for('static', filename='img/food_exercise.png') }}" alt="Food Icon" class="box-icon">
+            <div class="overlay-text">Food & Exercise</div>
+        </div>
+        <div class="small-box" data-category="routine">
+            <img src="{{ url_for('static', filename='img/routine.png') }}" alt="Routine Icon" class="box-icon">
+            <div class="overlay-text"> Daily Routine</div>
+        </div>
+        <div class="small-box" data-category="important">
+            <img src="{{ url_for('static', filename='img/important.jpg') }}" alt="Important Icon" class="box-icon">
+            <div class="overlay-text">Important Thing</div>
+        </div>
+    </div>
+
+    <!-- Big central box -->
+    <div class="big-box" id="bigBox">
+        Click one of the boxes above to see the content here!
+    </div>
+</div>
+
+<!-- STYLES -->
+<style>
+/* Container */
+.container {
+    width: 1000px;
+    margin: 30px auto;
+}
+
+/* Title */
+.page-section h1 {
+    font-size: 48px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+/* Row of boxes */
+.small-boxes {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Each small box as rectangle with overlay text */
+.small-box {
+    position: relative;
+    flex: 1;
+    margin: 0 10px;
+    height: 140px; /* Reduced height to make rectangle */
+    border: 2px solid #007bff;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+}
+
+.small-box:first-child { margin-left: 0; }
+.small-box:last-child { margin-right: 0; }
+
+.small-box:hover {
+    transform: scale(1.05);
+    border-color: #0056b3;
+}
+
+/* Image fills the box */
+.box-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Overlay text centered over image */
+.overlay-text {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    padding: 8px 0;
+    letter-spacing: 0.5px;
+}
+
+/* Big content box */
+.big-box {
+    background: linear-gradient(135deg, #ffffff, #d0f0fd);
+    border: 3px solid #007bff;
+    border-radius: 20px;
+    padding: 50px;
+    min-height: 550px;
+    font-size: 18px;
+    text-align: left;
+    box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+    line-height: 1.7;
+    position: relative;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.big-box::before {
+    content: url('https://img.icons8.com/ios/100/007bff/health-checkup.png');
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0.1;
+    transform: rotate(-15deg);
+}
+
+h2 {
+    color: #007bff;
+}
+</style>
+
+<!-- SCRIPT -->
+<script>
+const bigBox = document.getElementById('bigBox');
+const smallBoxes = document.querySelectorAll('.small-box');
+
+smallBoxes.forEach(box => {
+    box.addEventListener('click', () => {
+        const category = box.getAttribute('data-category');
+
+        const form = document.querySelector('#userForm');
+        const formData = new FormData(form);
+
+        fetch(`/get_content/${category}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            bigBox.innerHTML = data.content;
+        })
+        .catch(err => {
+            console.error(err);
+            bigBox.innerHTML = "<p>Error fetching content.</p>";
+        });
+    });
+});
+</script>
+{% endblock %}
+
